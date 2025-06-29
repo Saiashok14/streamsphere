@@ -1,16 +1,32 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
+
+  const handleGetStarted = () => {
+    if (user) {
+      navigate('/browse');
+    } else {
+      navigate('/signup');
+    }
+  };
+
   return (
     <div className="bg-black text-white min-h-screen">
       {/* Hero Banner */}
       <div
         className="relative h-[75vh] bg-cover bg-center"
         style={{
-        backgroundImage: `url('https://wallpaperaccess.com/full/3295833.jpg')`,
-
-
-
+          backgroundImage: `url('https://wallpaperaccess.com/full/3295833.jpg')`,
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-90" />
@@ -22,12 +38,14 @@ function Home() {
           </h1>
 
           <p className="text-xl mb-6">Unlimited Entertainment, Anytime, Anywhere.</p>
-          <Link
-            to="/signup"
+
+          {/* ✅ Updated Button */}
+          <button
+            onClick={handleGetStarted}
             className="bg-red-600 px-6 py-3 text-white font-semibold rounded hover:bg-red-700 transition"
           >
             Get Started
-          </Link>
+          </button>
         </div>
       </div>
 

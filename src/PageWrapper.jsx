@@ -11,7 +11,7 @@ function PageWrapper({ title, children }) {
   }, []);
 
   return (
-    <div className="relative bg-black text-white min-h-screen overflow-hidden">
+    <div className="relative  text-white min-h-screen overflow-hidden">
       {/* Floating YouTube thumbnails */}
       <div className="absolute inset-0 -z-10 opacity-20 blur-sm pointer-events-none">
         <div className="absolute w-full h-full flex flex-wrap items-center justify-center gap-6">
@@ -34,12 +34,13 @@ function PageWrapper({ title, children }) {
 
       {/* Header with logo and title */}
       <div className="relative z-10 h-[25vh] flex flex-col justify-end p-10 bg-gradient-to-t from-black via-transparent to-black">
-        <h1 className="text-5xl font-black">
-          <span className="text-red-600">STREAM</span>
-          <span className="text-white">SPHERE</span>
-        </h1>
-        {title && <p className="text-lg text-gray-300 mt-2">{title}</p>}
-      </div>
+  <h1 className="text-5xl font-black">
+    <span className="text-red-600">STREAM</span>
+    <span className="text-white">SPHERE</span>
+  </h1>
+  <p className="text-gray-300 mt-2">Browse All Available Videos</p>
+</div>
+
 
       {/* Main content */}
       <div className="relative z-10 p-6">{children}</div>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import PageWrapper from './PageWrapper';
 
 function Signup() {
@@ -10,43 +10,66 @@ function Signup() {
   const handleSignup = (e) => {
     e.preventDefault();
     const users = JSON.parse(localStorage.getItem('users')) || [];
-    const exists = users.find((u) => u.email === email);
-    if (exists) {
-      alert('User already exists');
+
+    const alreadyExists = users.find((u) => u.email === email);
+    if (alreadyExists) {
+      alert('Account already exists. Please login.');
+     navigate('/');
+
       return;
     }
+
     users.push({ email, password });
     localStorage.setItem('users', JSON.stringify(users));
     localStorage.setItem('currentUser', JSON.stringify({ email }));
     navigate('/browse');
   };
+return (
+  <div
+    className="min-h-screen flex items-center justify-center bg-cover bg-center"
+    style={{
+      backgroundImage: 'url("/fotor-ai-20250629162535.jpg")',
+    }}
+  >
+    <PageWrapper>
+      <div className="max-w-md w-full bg-black bg-opacity-70 backdrop-blur-sm p-6 rounded-lg shadow-lg text-white">
+        <h2 className="text-2xl font-bold mb-4 text-center">Sign Up</h2>
+        <form onSubmit={handleSignup}>
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full p-3 mb-4 rounded text-black"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full p-3 mb-4 rounded text-black"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded"
+          >
+            Create Account
+          </button>
+        </form>
 
-  return (
-    <PageWrapper title="Create a STREAMSPHERE account">
-      <form onSubmit={handleSignup} className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg text-black">
-        <h2 className="text-2xl font-bold mb-4">Signup</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-2 mb-3 border border-gray-300 rounded"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-2 mb-4 border border-gray-300 rounded"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit" className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700">
-          Sign Up
-        </button>
-      </form>
+        <p className="mt-4 text-sm text-center text-gray-300">
+          Already have an account?{' '}
+          <Link to="/login" className="text-red-400 hover:underline">
+            Login here
+          </Link>
+        </p>
+      </div>
     </PageWrapper>
-  );
+  </div>
+);
+
 }
 
 export default Signup;
