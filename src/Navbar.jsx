@@ -1,55 +1,68 @@
-// src/Navbar.jsx
-import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Navbar() {
+  const [nickname, setNickname] = useState('');
+  const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('loggedInUser'));
-    setUser(storedUser);
-  }, []);
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const storedUser = JSON.parse(localStorage.getItem('loggedInUser'));
-      setUser(storedUser);
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (user?.nickname) {
+      setNickname(user.nickname);
+    }
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('loggedInUser');
-    setUser(null);
+    localStorage.removeItem('currentUser');
     navigate('/login');
   };
 
   return (
-    <nav className="bg-gray-900 text-white px-6 py-4 flex justify-between items-center">
-      <div className="text-xl font-bold">
-        <Link to="/" className="text-red-500">STREAM</Link>
-        <span>SPHERE</span>
+    <nav className="bg-black text-white px-6 py-4 flex justify-between items-center shadow-md">
+      {/* Center Links */}
+      <div className="flex gap-6 mx-auto">
+        <Link to="/" className="hover:text-red-500 font-semibold">
+          Home
+        </Link>
+        <Link to="/browse" className="hover:text-red-500 font-semibold">
+          Browse
+        </Link>
+        <Link to="/admin" className="hover:text-red-500 font-semibold">
+          Admin
+        </Link>
       </div>
 
-      <div className="flex gap-4 items-center">
-        <Link to="/" className="hover:underline">Home</Link>
-        {!user && <Link to="/login" className="hover:underline">Login</Link>}
-        {!user && <Link to="/signup" className="hover:underline">Signup</Link>}
-        {user && <Link to="/browse" className="hover:underline">Browse</Link>}
-        {user && <Link to="/admin" className="hover:underline">Admin</Link>}
-        {user && <span className="text-green-400">Hello, {user.email.split('@')[0]}</span>}
-        {user && (
+      {/* Right side nickname and dropdown */}
+      {nickname && (
+        <div className="relative">
           <button
-            onClick={handleLogout}
-            className="text-red-400 hover:underline"
+            onClick={() => setShowMenu(!showMenu)}
+            className="bg-gray-800 px-4 py-2 rounded-full hover:bg-gray-700 transition"
           >
-            Logout
+            👋 Hi, {nickname}
           </button>
-        )}
-      </div>
+          {showMenu && (
+            <div className="absolute right-0 mt-2 bg-white text-black rounded shadow-lg overflow-hidden w-32 z-50">
+              <button
+                className="w-full text-left px-4 py-2 hover:bg-gray-200"
+                onClick={() => {
+                  setShowMenu(false);
+                  alert('Profile clicked! (You can implement profile page next)');
+                }}
+              >
+                👤 Profile
+              </button>
+              <button
+                className="w-full text-left px-4 py-2 hover:bg-gray-200"
+                onClick={handleLogout}
+              >
+                🚪 Logout
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </nav>
   );
 }

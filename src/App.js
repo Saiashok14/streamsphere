@@ -1,4 +1,11 @@
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+  useLocation,
+} from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Login from './Login';
 import Signup from './Signup';
@@ -9,6 +16,7 @@ import Home from './Home';
 
 function AppContent({ user, handleLogout }) {
   const location = useLocation();
+  const [showDropdown, setShowDropdown] = useState(false);
 
   // Hide Navbar on these routes
   const hideNavbarRoutes = ['/login', '/signup'];
@@ -17,23 +25,49 @@ function AppContent({ user, handleLogout }) {
   return (
     <>
       {!shouldHideNavbar && (
-        <nav className="bg-gray-800 text-white p-4 flex justify-center gap-6">
-          <Link to="/" className="hover:underline">Home</Link>
-          <Link to="/browse" className="hover:underline">Browse</Link>
-          <Link to="/admin" className="hover:underline">Admin</Link>
-          {!user && (
-            <>
-              <Link to="/login" className="hover:underline">Login</Link>
-              <Link to="/signup" className="hover:underline">Signup</Link>
-            </>
-          )}
+        <nav className="bg-gray-800 text-white px-6 py-4 flex justify-between items-center">
+          {/* Center links */}
+          <div className="flex gap-6 mx-auto">
+            <Link to="/" className="hover:underline">
+              Home
+            </Link>
+            <Link to="/browse" className="hover:underline">
+              Browse
+            </Link>
+            <Link to="/admin" className="hover:underline">
+              Admin
+            </Link>
+          </div>
+
+          {/* Right corner nickname + dropdown */}
           {user && (
-            <>
-              <span className="text-green-300">Hello, {user.email}</span>
-              <button onClick={handleLogout} className="hover:underline text-red-300">
-                Logout
+            <div className="relative">
+              <button
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="bg-gray-700 px-4 py-2 rounded-full hover:bg-gray-600 transition"
+              >
+                👋 Hi, {user.nickname || user.email}
               </button>
-            </>
+              {showDropdown && (
+                <div className="absolute right-0 mt-2 bg-white text-black rounded shadow-lg overflow-hidden w-32 z-50">
+                  <button
+                    className="w-full text-left px-4 py-2 hover:bg-gray-200"
+                    onClick={() => {
+                      setShowDropdown(false);
+                      alert('Profile clicked!'); // Placeholder
+                    }}
+                  >
+                    👤 Profile
+                  </button>
+                  <button
+                    className="w-full text-left px-4 py-2 hover:bg-gray-200"
+                    onClick={handleLogout}
+                  >
+                    🚪 Logout
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </nav>
       )}
@@ -42,16 +76,22 @@ function AppContent({ user, handleLogout }) {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/browse" element={
-          <ProtectedRoute>
-            <Browse />
-          </ProtectedRoute>
-        } />
-        <Route path="/admin" element={
-          <ProtectedRoute>
-            <Admin />
-          </ProtectedRoute>
-        } />
+        <Route
+          path="/browse"
+          element={
+            <ProtectedRoute>
+              <Browse />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Admin />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );
